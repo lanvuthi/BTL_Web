@@ -7,9 +7,11 @@
 -- Phiên bản máy phục vụ: 10.4.21-MariaDB
 -- Phiên bản PHP: 7.3.30
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET
+SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET
+time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -27,21 +29,22 @@ SET time_zone = "+00:00";
 -- Cấu trúc bảng cho bảng `btl_user`
 --
 
-CREATE TABLE `btl_user` (
-  `btl_id` int(10) UNSIGNED NOT NULL,
-  `btl_uer` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `btl_email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `btl_pass` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+CREATE TABLE `btl_user`
+(
+    `btl_id`    int(10) UNSIGNED NOT NULL,
+    `btl_uer`   varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `btl_email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `btl_pass`  varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Đang đổ dữ liệu cho bảng `btl_user`
 --
 
-INSERT INTO `btl_user` (`btl_id`, `btl_uer`, `btl_email`, `btl_pass`) VALUES
-(1, 'lanlan', 'cnttlan@tlu.edu.vn', '1234'),
-(2, 'minhtri', 'cntttri@tlu.edu.vn', '12345'),
-(3, 'thienle', 'cnttthien@tlu.edu.vn', '123456');
+INSERT INTO `btl_user` (`btl_id`, `btl_uer`, `btl_email`, `btl_pass`)
+VALUES (1, 'lanlan', 'cnttlan@tlu.edu.vn', '1234'),
+       (2, 'minhtri', 'cntttri@tlu.edu.vn', '12345'),
+       (3, 'thienle', 'cnttthien@tlu.edu.vn', '123456');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

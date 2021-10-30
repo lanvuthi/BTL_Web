@@ -1,26 +1,33 @@
 
-main{
+main {
     margin: 30px 60px;
 }
-.alert{
+
+.alert {
     max-width: 500px;
     overflow: hidden;
 }
-.row{
+
+.row {
     align-items: center;
 }
-.col-5{
+
+.col-5 {
     margin: 30px 0;
 }
-.container .row #datepicker{
-    width: auto; 
+
+.container .row #datepicker {
+    width: auto;
 }
-.container .row #datepicker p{
+
+.container .row #datepicker p {
     margin-right: 20px;
 }
-#datepicker > span:hover{
+
+#datepicker > span:hover {
     cursor: pointer;
 }
-.col-6 .form-control{
+
+.col-6 .form-control {
     width: 300px;
 }
