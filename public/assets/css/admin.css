@@ -1,0 +1,24 @@
+.nav-info {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.nav-info__left {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.nav-info__left .role {
+    font-size: 12px;
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 90vw !important;
+    }
+}
+
+
+
