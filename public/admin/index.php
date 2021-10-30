@@ -2,19 +2,40 @@
 require("../config.php");
 if ($_GET['taskId']) {
     header('Content-Type: application/json; charset=utf-8');
-    $task = $db->where("id", $_GET['taskId'])->limit(1)->get("tasks");
+
+    $input = [
+        "{id}" => $_GET['taskId']
+    ];
+
+    $query = strtr("SELECT tasks.*, users.fullName as create_by_name from tasks INNER JOIN users ON users.id = tasks.created_by WHERE tasks.id = {id} LIMIT 1",
+        $input);
+    $task = $db->query($query, true);
     exit(json_encode($task));
 }
+
+if ($_POST['delete']) {
+    header('Content-Type: application/json; charset=utf-8');
+    $id = $_POST['delete'];
+    $status = $db->where("id", $id)->delete("tasks");
+    exit(json_encode([
+        "status" => $status
+    ]));
+}
+
+
 if ($_POST['id']) {
     header('Content-Type: application/json; charset=utf-8');
     $id = $_POST['id'];
+    $_POST['inputs']['updated_at'] = date('Y/m/d H:i:s');
     $status = $db->where("id", $id)->update("tasks", $_POST['inputs']);
     exit(json_encode([
         "status" => $status
     ]));
 }
+
 include "./layout/header.php";
-$tasks = $db->where("created_by", $_SESSION['id'])->get("tasks");
+
+//$tasks = $db->where("assign_user", $_SESSION['id'])->or_where("assign_group", $user['groupId'])->get("tasks");
 
 $statusStyle = [
     "Created" => "badge-light",
@@ -22,7 +43,15 @@ $statusStyle = [
     "Doing" => "badge-primary",
     "QA" => "badge-info",
     "Done" => "badge-success"
-]
+];
+$input = [
+    "{assign_group}" => $user['groupId'],
+    "{assign_user}" => $user['id']
+];
+$query = strtr("SELECT tasks.*, users.fullName from tasks INNER JOIN users ON users.id = tasks.created_by WHERE tasks.assign_user = {assign_user} OR tasks.assign_group = {assign_group}",
+    $input);
+
+$tasks = $db->query($query, true);
 ?>
 <main class="container" style="margin-top: 50px;">
     <div class="row">
@@ -74,6 +103,7 @@ $statusStyle = [
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Deadline</th>
                     <th scope="col">Ngày tạo</th>
+                    <th scope="col">Nguời tạo</th>
                     <th scope="col">Hành động</th>
                 </tr>
                 </thead>
@@ -97,11 +127,14 @@ $statusStyle = [
 
                         <td><?= $status['created_at'] ?></td>
 
+                        <td><?= $status['fullName'] ?></td>
+
                         <td>
                             <button class="btn btn-xs btn-info"
                                     onclick="editTask(<?= $status['id'] ?>)">Chi tiết
                             </button>
-                            <button class="btn btn-xs btn-danger">Xóa</button>
+                            <button class="btn btn-xs btn-danger" onclick="deleteTask(<?= $status['id'] ?>)">Xóa
+                            </button>
                         </td>
                     </tr>
                 <?php
@@ -116,7 +149,7 @@ $statusStyle = [
 
     <div class="modal fade" id="viewTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="taskId"></h5>
@@ -126,41 +159,67 @@ $statusStyle = [
                 </div>
                 <form id="updateTask" data-taskId="">
 
+
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="title">Tiêu đề:</label>
-                            <input type="title" required="" class="form-control" id="title" name="title"
-                                   placeholder="Nhập tiêu đề">
-                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="title">Tiêu đề:</label>
+                                    <input type="title" required="" class="form-control" id="title" name="title"
+                                           placeholder="Nhập tiêu đề">
+                                </div>
 
-                        <div class="form-group">
-                            <label for="description">Miêu tả :</label>
-                            <textarea class="form-control" name="description" rows="3"
-                                      placeholder="Miêu tả công việc"></textarea>
-                        </div>
+                                <div class="form-group">
+                                    <label for="description">Miêu tả :</label>
+                                    <textarea class="form-control" name="description" rows="3"
+                                              placeholder="Miêu tả công việc"></textarea>
+                                </div>
 
-                        <div class="form-group">
-                            <label for="deadline_at">Deadline:</label>
-                            <input type="text" class="form-control datepicker" name="deadline_at"
-                                   placeholder="Deadline at"
-                                   required>
-                        </div>
+                                <div class="form-group">
+                                    <label for="deadline_at">Deadline:</label>
+                                    <input type="text" class="form-control datepicker" name="deadline_at"
+                                           placeholder="Deadline at"
+                                           required>
+                                </div>
 
 
-                        <div class="form-group">
-                            <label for="sel1">Trạng thái:</label>
-                            <select class="form-control" id="sel1" name="status" required>
-                                <option>Created</option>
-                                <option>Todo</option>
-                                <option>Doing</option>
-                                <option>QA</option>
-                                <option>Done</option>
-                            </select>
+                                <div class="form-group">
+                                    <label for="sel1">Trạng thái:</label>
+                                    <select class="form-control" id="sel1" name="status" required>
+                                        <option>Created</option>
+                                        <option>Todo</option>
+                                        <option>Doing</option>
+                                        <option>QA</option>
+                                        <option>Done</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4" style="border-left: 1px solid #00000">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <b>Người tạo:</b> <span id="create_by_name"></span>
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <b>Giao cho :</b> <span id="assign_to">You</span>
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <b>Ngày tạo:</b> <span id="created_at"></span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Cập nhật:</b> <span id="updated_at"></span>
+                                    </li>
+
+
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                     </div>
                 </form>
             </div>
@@ -171,7 +230,7 @@ $statusStyle = [
 
     function editTask(taskId) {
         fetch('?taskId=' + taskId).then(res => res.json()).then(task => {
-            const { id, title, description, deadline_at, status } = task;
+            const { id, title, description, deadline_at, status, create_by_name, updated_at, created_at } = task;
             const modal = $('#viewTaskModal');
 
             modal.find('#updateTask').attr('data-taskId', id);
@@ -179,12 +238,34 @@ $statusStyle = [
             modal.find('textarea[name=\'description\']').val(description);
             modal.find('input[name=\'deadline_at\']').val(deadline_at);
             modal.find('select[name=\'status\']').val(status);
+            modal.find('#create_by_name').html(create_by_name);
+
+            modal.find('#created_at').html(created_at);
+
+            modal.find('#updated_at').html(updated_at);
 
             $('#taskId').html('Task: #' + id);
 
             $('#viewTaskModal').modal('show');
 
         });
+    }
+
+    function deleteTask(id) {
+        if (confirm('Bạn có chắc chắn muốn xóa ? ')) {
+            $.post('', {
+                delete: id
+            }).then(res => {
+                if (res.status) {
+                    alert('Đã xóa!');
+                    window.location.reload();
+                } else {
+                    alert('Đã xảy ra lỗi khi xóa ');
+                }
+            }).catch(() => {
+                alert('Đã xảy ra lỗi khi xóa ');
+            });
+        }
     }
 
     $('#updateTask').submit(e => {

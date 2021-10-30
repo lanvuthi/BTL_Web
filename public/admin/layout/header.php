@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once(dirname(__DIR__) . "./../config.php");
+$user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -8,7 +10,9 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
@@ -38,15 +42,22 @@ session_start();
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Quản lý công việc<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/admin/index.php">Quản lý công việc<span class="sr-only">(current)</span></a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Công việc được giao</a>
-                </li>
+                <?php
+                if ($user['role'] === '1') {
+                    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/manager/user.php">Quản lý thành viên</a>
+                    </li>
+                    <?php
+                }
+                ?>
+
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Thông tin cá nhân</a>
+                    <a class="nav-link" href="/admin/profile-manager.php">Thông tin cá nhân</a>
                 </li>
 
 
@@ -61,7 +72,7 @@ session_start();
             <div class="my-2 my-lg-0">
                 <div class="nav-info">
                     <div class="nav-info__left">
-                        <b>Nguyễn Văn Trí</b>
+                        <b><?= $user['fullName'] ?></b>
                         <span class="role">Front End Developer</span>
                     </div>
                     <div class="nav-info__right">

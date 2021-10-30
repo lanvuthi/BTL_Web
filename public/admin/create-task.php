@@ -8,12 +8,13 @@ if (isset($_POST['title'])) {
         "description" => $_POST['description'],
         "deadline_at" => $_POST['deadline_at'],
         "status" => $_POST['status'],
-        "created_by" => $_SESSION['id']
+        "created_by" => $_SESSION['id'],
+        "assign_user" => $_SESSION['id'],
     ];
 
     $status = $db->insert("tasks", $data);
     if ($status) {
-        echo "<script>alert('Đã tạo kế hoạch')</script>";
+        echo "<script>window.location = '/admin/index.php'; alert('Đã tạo kế hoạch');</script>";
     }
 }
 
