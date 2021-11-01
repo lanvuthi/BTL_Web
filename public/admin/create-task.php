@@ -53,7 +53,7 @@ if (isset($_POST['title'])) {
                 <div class="form-group">
                     <label for="deadline_at">Deadline:</label>
                     <input type="text" class="form-control datepicker" name="deadline_at" placeholder="Deadline at"
-                           required id="deadline_at" autocomplete="off">
+                           id="deadline_at" autocomplete="off">
                 </div>
 
 

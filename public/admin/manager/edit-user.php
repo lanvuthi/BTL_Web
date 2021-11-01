@@ -84,7 +84,6 @@ $groups = $db->get("groups");
                         <select class="form-control" name="groupId" value="<?= $user['groupId'] ?>">
                             <option value="">Cá nhân (Ko xếp nhóm )</option>
                             <?php
-
                             foreach ($groups as $group):
                                 ?>
                                 <option value="<?= $group['group_id'] ?>" <?php

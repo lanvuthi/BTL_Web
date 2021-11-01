@@ -196,7 +196,7 @@ $todayJobs = $db->query($todayJobQuery, true);
                             <span class="badge <?= $statusStyle[$status['status']] ?>"><?= $status['status'] ?></span>
 
 
-                        <td><?= $status['deadline_at'] ?></td>
+                        <td><?= ($status['deadline_at'] == "0000-00-00 00:00:00") ? "<span class='badge badge-info'>Chưa có hạn</span>" : $status['deadline_at'] ?></td>
 
                         <td><?= $status['created_at'] ?></td>
 
@@ -312,8 +312,6 @@ $todayJobs = $db->query($todayJobQuery, true);
                                     <li class="list-group-item">
                                         <b>Cập nhật:</b> <span id="updated_at"></span>
                                     </li>
-
-
                                 </ul>
                             </div>
                         </div>
