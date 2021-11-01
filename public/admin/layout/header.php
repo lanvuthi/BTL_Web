@@ -10,6 +10,14 @@ $user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/vi.min.js"
+            integrity="sha512-LvYVj/X6QpABcaqJBqgfOkSjuXv81bLz+rpz0BQoEbamtLkUF2xhPNwtI/xrokAuaNEQAMMA1/YhbeykYzNKWg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
             integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -19,10 +27,15 @@ $user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-    <link rel="stylesheet prefetch"
-          href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+
+    <script src="https://www.jqueryscript.net/demo/Date-Time-Picker-Bootstrap-4/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet"
+          href="https://www.jqueryscript.net/demo/Date-Time-Picker-Bootstrap-4/build/css/bootstrap-datetimepicker.min.css" />
 
     <title>Quản Lý</title>
 </head>
@@ -49,12 +62,25 @@ $user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
                 if ($user['role'] === '1') {
                     ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/manager/user.php">Quản lý thành viên</a>
+                        <div class="dropdown">
+                            <a class="nav-link" href="javascript:void(0)" data-toggle="dropdown">Quản lý <i
+                                        class="arrow down"></i></a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/admin/manager/user.php">Quản lý người dùng</a>
+                                <a class="dropdown-item" href="/admin/manager/group.php">Quản lý nhóm người dùng</a>
+                                <a class="dropdown-item" href="/admin/manager/notification.php">Gửi thông báo</a>
+                            </div>
+                        </div>
+
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/manager/group.php">Quản lý nhóm thành viên</a>
+                    </li>
+
                     <?php
                 }
                 ?>
-
 
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/profile-manager.php">Thông tin cá nhân</a>
@@ -69,7 +95,51 @@ $user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
             <div class="nav-notification">
 
             </div>
-            <div class="my-2 my-lg-0">
+
+            <?php
+
+            $input = [
+                "{send_user}" => $user['id'],
+                "{send_group}" => $user['groupId']
+            ];
+
+            $query = strtr("SELECT * FROM `notifications` WHERE send_user = {send_user} OR send_group = {send_group} or (send_user =0 and send_group = 0) ORDER BY noti_id DESC",
+                $input);
+
+            $notifications = $db->query($query, true);
+
+
+            ?>
+            <div class="my-4 my-lg-0 header-right">
+                <div class="badge" id="bell">
+                    <img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-bell-512.png" width=""
+                         50px />
+                    <span><?= count($notifications) ?></span>
+                </div>
+
+                <div class="notification" style="max-width: 400px; min-width: 400px;">
+                    <ul class="list-group">
+                        <?php
+                        foreach ($notifications as $notification):
+                            ?>
+                            <li class="list-group-item">
+                                <span><?= $notification['notification_title'] ?>: </span> <br />
+                                <span class="text-muted"><?= $notification['notification_detail'] ?></span>
+                                <div class="notification-info">
+                                    <div class="sendTo" style="font-size: 10px;">
+                                        <i class="fa fa-clock-o"
+                                           aria-hidden="true"></i> <?= $notification['created_at'] ?>
+                                    </div>
+
+                                </div>
+                            </li>
+                        <?php
+                        endforeach;
+                        ?>
+                    </ul>
+
+                </div>
+
                 <div class="nav-info">
                     <div class="nav-info__left">
                         <b><?= $user['fullName'] ?></b>
