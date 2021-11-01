@@ -3,57 +3,59 @@ require "../../config.php";
 if ($_POST['delete']) {
     header('Content-Type: application/json; charset=utf-8');
     $id = $_POST['delete'];
-    $status = $db->where("id", $id)->delete("users");
+    $status = $db->where("group_id", $id)->delete("groups");
     exit(json_encode([
         "status" => $status
     ]));
 }
-
 include "../layout/header.php";
-$users = $db->query("SELECT * FROM `users` LEFT JOIN groups ON users.groupId = groups.group_id ", true);
+$groups = $db->get("groups");
+
+function getGroupMemberCount($db, $groupId)
+{
+    $db->where("groupId", $groupId)->get("users");
+    return $db->num_rows();
+}
+
 ?>
+
 <div class="row">
     <div class="container">
+        <a href="/admin/manager/create-group.php" class="btn btn-primary">Tạo nhóm</a>
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title">Quản lý thành viên</h3>
+                <h3 class="card-title">Quản lý nhóm</h3>
                 <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Tên đây đủ</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Birthday</th>
-                        <th scope="col">Group</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Edit</th>
+                        <th scope="col">Tên nhóm</th>
+                        <th scope="col">Miêu tả</th>
+                        <th scope="col">Số lượng thành viên</th>
+                        <th scope="col">Hành động</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($users as $index => $user):
+                    foreach ($groups as $index => $group):
                         ?>
                         <tr>
-                            <th scope="row"><?= ++$index ?></th>
-                            <td><?= $user['username'] ?></td>
-                            <td><?= $user['fullName'] ?></td>
-                            <td><?= $user['email'] ?></td>
-                            <td><?= $user['birthday'] ?></td>
-                            <td><?= $user['group_name'] ?></td>
-                            <td><?= $user['role'] == 1 ? "Admin" : "Thành viên " ?></td>
+                            <td><?= ++$index ?></td>
+                            <td><?= $group['group_name'] ?></td>
+                            <td><?= $group['group_description'] ?></td>
+                            <td><?= getGroupMemberCount($db, $group['group_id']) ?></td>
                             <td>
                                 <a class="btn btn-xs btn-info"
-                                   href="/admin/manager/edit-user.php?id=<?= $user['id'] ?>">Sửa
+                                   href="/admin/manager/edit-group.php?id=<?= $group['group_id'] ?>">Sửa
                                 </a>
-                                <button class="btn btn-xs btn-danger" onclick="deleteUser(<?= $user['id'] ?>)">Xóa
+                                <button class="btn btn-xs btn-danger" onclick="deleteGroup(<?= $group['group_id'] ?>)">
+                                    Xóa
                                 </button>
                             </td>
                         </tr>
                     <?php
                     endforeach;
                     ?>
-
                     </tbody>
                 </table>
             </div>
@@ -61,7 +63,8 @@ $users = $db->query("SELECT * FROM `users` LEFT JOIN groups ON users.groupId = g
     </div>
 </div>
 <script>
-    function deleteUser(id) {
+
+    function deleteGroup(id) {
         if (confirm('Bạn có chắc chắn muốn xóa ? ')) {
             $.post('', {
                 delete: id

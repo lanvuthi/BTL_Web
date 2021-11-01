@@ -19,6 +19,8 @@ if ($_POST) {
     if (isset($user['id'])) {
         $_SESSION["id"] = $user['id'];
         $_SESSION["username"] = $user['username'];
+        exit("<script>window.location = 'admin/index.php';</script>");
+
     } else {
         $isWrongPassword = true;
     }

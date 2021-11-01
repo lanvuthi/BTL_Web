@@ -82,6 +82,7 @@ $groups = $db->get("groups");
                     <div class="form-group">
                         <label>Nhóm: </label>
                         <select class="form-control" name="groupId" value="<?= $user['groupId'] ?>">
+                            <option value="">Cá nhân (Ko xếp nhóm )</option>
                             <?php
 
                             foreach ($groups as $group):
@@ -96,6 +97,7 @@ $groups = $db->get("groups");
                             <?php
                             endforeach;
                             ?>
+
                         </select>
                     </div>
 

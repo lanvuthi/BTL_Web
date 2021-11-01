@@ -3,22 +3,35 @@ include "./layout/header.php";
 require_once('../config.php');
 
 if (isset($_POST['title'])) {
-    $data = [
-        "title" => $_POST['title'],
-        "description" => $_POST['description'],
-        "deadline_at" => $_POST['deadline_at'],
-        "status" => $_POST['status'],
-        "created_by" => $_SESSION['id'],
-        "assign_user" => $_SESSION['id'],
-    ];
+    $isHasError = false;
+//    $datelineTimestamp = strtotime($_POST['deadline_at']);
+//
+//    if ($datelineTimestamp <= time()) {
+//        echo "<script>alert('Deadline phải lớn hơn thời gian hiện tại. ');</script>";
+//        $isHasError = true;
+//    }
 
-    $status = $db->insert("tasks", $data);
-    if ($status) {
-        echo "<script>window.location = '/admin/index.php'; alert('Đã tạo kế hoạch');</script>";
+    if (!$isHasError) {
+        $data = [
+            "title" => $_POST['title'],
+            "description" => $_POST['description'],
+            "deadline_at" => $_POST['deadline_at'],
+            "status" => $_POST['status'],
+            "created_by" => $_SESSION['id'],
+            "assign_user" => isset($_POST['assign_user']) ? $_POST['assign_user'] : $_SESSION['id'],
+            "assign_group" => $_POST['assign_group']
+        ];
+
+        $status = $db->insert("tasks", $data);
+        if ($status) {
+            echo "<script>window.location = '/admin/index.php'; alert('Đã tạo kế hoạch');</script>";
+        }
     }
+
 }
 
 ?>
+
 <div class="container" style="margin-top: 50px;">
     <div class="card">
         <div class="card-header">Tạo mới kế hoạch</div>
@@ -40,9 +53,43 @@ if (isset($_POST['title'])) {
                 <div class="form-group">
                     <label for="deadline_at">Deadline:</label>
                     <input type="text" class="form-control datepicker" name="deadline_at" placeholder="Deadline at"
-                           required>
+                           required id="deadline_at" autocomplete="off">
                 </div>
 
+
+                <?php
+                if ($user['role'] == 1) {
+                    ?>
+                    <div class="form-group">
+                        <label for="sel1">Nhóm được giao:</label>
+                        <select class="form-control" id="sel1" name="assign_group">
+                            <option value="">----------</option>
+                            <?php
+                            $groups = $db->get("groups");
+                            foreach ($groups as $group):
+                                echo "<option value='{$group['group_id']}'>{$group['group_name']}</option>";
+                            endforeach;
+                            ?>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="sel1">Cá nhân được giao:</label>
+                        <select class="form-control" id="sel1" name="assign_user">
+                            <option value="">----------</option>
+                            <?php
+                            $users = $db->get("users");
+                            foreach ($users as $assignUser):
+                                echo "<option value='{$assignUser['id']}'>{$assignUser['fullName']} - {$assignUser['username']}</option>";
+                            endforeach;
+                            ?>
+                        </select>
+                    </div>
+
+                    <?php
+                }
+                ?>
 
                 <div class="form-group">
                     <label for="sel1">Trạng thái:</label>
