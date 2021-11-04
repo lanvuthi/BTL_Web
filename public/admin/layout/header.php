@@ -74,9 +74,6 @@ $user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
 
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/manager/group.php">Quản lý nhóm thành viên</a>
-                    </li>
 
                     <?php
                 }
@@ -143,7 +140,15 @@ $user = $db->where("id", $_SESSION['id'])->limit(1)->get("users");
                 <div class="nav-info">
                     <div class="nav-info__left">
                         <b><?= $user['fullName'] ?></b>
-                        <span class="role">Front End Developer</span>
+                        <span class="role">
+                            <?php
+                            if ($user['role'] == '1') {
+                                echo '<span class="badge badge-primary">Quản trị viên</span>';
+                            }else{
+                                echo '<span class="badge badge-default">User</span>';
+                            }
+                            ?>
+                        </span>
                     </div>
                     <div class="nav-info__right">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkfLH-eNQSC_NGgramusia6FMOMLSTirhokA&usqp=CAU"
