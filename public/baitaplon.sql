@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: baitaplon
--- Generation Time: Nov 03, 2021 at 02:16 PM
+-- Generation Time: Nov 04, 2021 at 12:40 AM
 -- Server version: 5.7.35
 -- PHP Version: 7.4.20
 
@@ -38,10 +38,9 @@ CREATE TABLE `groups` (
 --
 
 INSERT INTO `groups` (`group_id`, `group_name`, `group_description`) VALUES
-(1, 'Front End Developer 4', 'Front end developer'),
+(1, 'Front End Developer', 'Front end developer'),
 (2, 'Backend Developer', 'Backend Developer'),
-(5, 'Tester', 'Tester'),
-(6, 's', 'ds');
+(5, 'Tester', 'Tester');
 
 -- --------------------------------------------------------
 
@@ -64,9 +63,8 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`noti_id`, `notification_title`, `notification_detail`, `notification_type`, `send_user`, `send_group`, `created_at`) VALUES
-(7, 'Shop edidiset go live', 'Add .disabled to a .list-group-item to make it appear disabled. Note that some elements with .disabled will also require custom JavaScript to fully disable their click events (e.g., links).\n\n', 1, 0, 0, '2021-11-01 14:00:23'),
-(8, 'Thoong baso thu nha', '', 1, 5, 1, '2021-11-01 14:05:26'),
-(9, 'Thong bao cho tri', 'asdadsasdasd', 1, 5, 0, '2021-11-01 14:05:34');
+(10, 'Họp team Front end vào 15h chiều nay (04-11-2021)', 'Phòng họp số 6. ', 1, 0, 1, '2021-11-04 00:38:48'),
+(11, 'Có feedback ở task PWA-12323 cho bạn', 'Có feedback ở task PWA-12323 cho bạn', 1, 7, 0, '2021-11-04 00:39:51');
 
 -- --------------------------------------------------------
 
@@ -92,13 +90,9 @@ CREATE TABLE `tasks` (
 --
 
 INSERT INTO `tasks` (`id`, `title`, `description`, `status`, `deadline_at`, `created_at`, `updated_at`, `created_by`, `assign_user`, `assign_group`) VALUES
-(29, '2', 'Template Sign In ', 'Done', '2021-11-03 16:07:35', '2021-11-01 14:24:49', '2021-11-03 13:56:46', 5, 0, 1),
-(32, '3', 'Template Sign In page', 'Doing', '2021-11-01 16:07:36', '2021-11-01 14:55:09', '2021-11-01 14:59:43', 5, 0, 1),
-(33, 'Template Sign Page 1', 'Template Sign Page 1', 'Created', '2021-11-03 16:07:37', '2021-11-01 15:32:06', '2021-11-01 16:16:34', 5, 7, 0),
-(34, 'Template Landing Page', 'Template Landing Page', 'Created', '2021-11-03 23:58:23', '2021-11-01 16:58:25', '2021-11-01 16:58:25', 5, 7, 0),
-(35, 'asdfasdfasdfs', 'fasfasfasdf', 'Created', '2021-11-03 21:04:06', '2021-11-01 17:00:04', '2021-11-01 17:00:04', 5, 0, 0),
-(36, 'Template Sign In pgae q23jk12j', 'Template Sign In pgae q23jk12j', 'Created', '2021-11-05 00:03:48', '2021-11-01 17:00:46', '2021-11-01 17:03:54', 5, 7, 0),
-(37, 'Facebook helps you', 'Facebook helps you connect and share with the people in your life.\n', 'Created', '2021-11-04 00:06:43', '2021-11-01 17:05:30', '2021-11-01 17:06:46', 5, 7, 0);
+(38, 'Template: Sign In Page', 'Design: https://www.figma.com/file/bjp9nkro33VGAjUFmUpEaT/Untitled?node-id=1%3A11', 'Created', '0000-00-00 00:00:00', '2021-11-04 00:34:47', '2021-11-04 00:34:47', 5, 7, 0),
+(39, 'Họp team Front End', 'Phòng họp số 1', 'Created', '2021-11-04 15:00:00', '2021-11-04 00:36:00', '2021-11-04 00:36:00', 5, 0, 1),
+(40, '[Urgent] Template Home Page', 'Design: https://www.figma.com/file/bjp9nkro33VGAjUFmUpEaT/Untitled?node-id=1%3A11 \n----------------------------\nNote: Cần phải hoàn thành trong hôm nay', 'Created', '2021-11-04 07:37:45', '2021-11-04 00:37:27', '2021-11-04 00:37:49', 5, 7, 0);
 
 -- --------------------------------------------------------
 
@@ -122,8 +116,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `fullName`, `birthday`, `groupId`, `role`) VALUES
-(5, 'admin', '292aabe9b3b4583d81068ad544521d82', 'admin@nguyentri.me', ' Văn Trí', '2021-11-02', 2, 1),
-(7, 'user1', '3378506e848caec60d917c0d0a3f603b', 'trideptrai1@kajsd.com', 'User 1', '0000-00-00', 99, 0);
+(5, 'admin', '292aabe9b3b4583d81068ad544521d82', 'admin@nguyentri.me', ' Quản trị viên', '2021-11-02', 0, 1),
+(7, 'user1', '0e7517141fb53f21ee439b355b5a1d0a', 'nguyentri729.2018@gmail.com', 'Nguyễn Văn Trí', '2001-05-05', 1, 0);
 
 --
 -- Indexes for dumped tables
@@ -167,13 +161,13 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `noti_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `noti_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `users`
